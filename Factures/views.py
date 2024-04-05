@@ -8,7 +8,7 @@ from .serializers import FactureSerializer
 # Create your views here.
 
 @api_view(['GET', 'POST'])
-def list_facture_(request, pk_client):
+def list_facture_par_client(request, pk_client):
     if request.method == 'GET':
         factures = Facture.objects.filter(client=pk_client)
         serializer = FactureSerializer(factures, many=True)
@@ -19,7 +19,6 @@ def list_facture_(request, pk_client):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
