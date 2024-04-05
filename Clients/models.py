@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here.
 class Client(models.Model):
     id_client = models.AutoField(primary_key=True)
@@ -10,4 +11,3 @@ class Client(models.Model):
 
     def __str__(self):
         return self.nom
-    
