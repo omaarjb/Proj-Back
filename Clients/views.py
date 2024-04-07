@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from .models import Client
 from .serializers import ClientSerializer
 from rest_framework.decorators import api_view
+from django.contrib.auth.hashers import make_password
 
 
 # Create your views here.
@@ -13,10 +14,14 @@ def clients_list(request):
         serializer = ClientSerializer(clients, many=True)
         return Response(serializer.data)
     if request.method == 'POST':
-        serializer = ClientSerializer(data=request.data)
+        data = request.data.copy()
+        hashed_password = make_password(data.get('password'))
+        data['password'] = hashed_password
+        serializer = ClientSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
