@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here.
 class Categorie(models.Model):
     Id_categorie = models.AutoField(primary_key=True)
@@ -7,4 +8,3 @@ class Categorie(models.Model):
 
     def __str__(self):
         return self.nom_categorie
-
