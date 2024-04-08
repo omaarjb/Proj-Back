@@ -1,3 +1,6 @@
+###################### THIS SCRIPT IS ALREADY EXECUTED, DO NOT ATTEMPT TO RUN IT AGAIN #################################
+######################                       B9IT M3AHA 3H                             #################################
+
 import os
 import requests
 import django
