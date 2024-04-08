@@ -9,7 +9,7 @@ class ClientSerializer(serializers.ModelSerializer):
 
     def validate_email(self, value):
         if Client.objects.filter(email=value).exists():
-            raise serializers.ValidationError("Email address must be unique.")
+            raise serializers.ValidationError("Email address already exists .")
         return value
     
 
