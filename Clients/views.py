@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from .models import Client
 from .serializers import ClientSerializer
 from rest_framework.decorators import api_view
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 
 
 # Create your views here.
@@ -69,3 +69,28 @@ def clientsByEmail(request, email):
 
    
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+
+
+
+@api_view(['POST'])
+def login(request):
+    email = request.data.get('email')
+    password = request.data.get('password')
+
+    if not email or not password:
+        return Response({'error': 'Both email and password are required'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+       
+        client = Client.objects.get(email=email)
+    except Client.DoesNotExist:
+        return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    
+    if not check_password(password, client.password):
+        return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    return Response({'message': 'Login successful'}, status=status.HTTP_200_OK)
+
