@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     'Factures',
     'Commande',
     'Ligne_Commandes',
-    'Chatbot',
+ 
     
 ]
 
