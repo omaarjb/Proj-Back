@@ -1,9 +1,14 @@
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import Client
 from .serializers import ClientSerializer
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from django.contrib.auth.hashers import make_password, check_password
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import Token
+from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
+from rest_framework_simplejwt.tokens import AccessToken
 
 
 # Create your views here.
@@ -18,9 +23,19 @@ def clients_list(request):
         hashed_password = make_password(data.get('password'))
         data['password'] = hashed_password
         serializer = ClientSerializer(data=data)
+
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            clients_detail = serializer.save()
+            refresh = RefreshToken.for_user(serializer.instance)
+            token = {
+                'client_id': clients_detail.id,
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+            }
+            response_data = {
+                'token': token
+            }
+            return Response(response_data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -45,6 +60,7 @@ def clients_detail(request, pk):
         client.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 @api_view(['GET', 'PUT', 'DELETE'])
 def clientsByEmail(request, email):
     try:
@@ -67,11 +83,7 @@ def clientsByEmail(request, email):
         client.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-   
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
-
-
 
 
 @api_view(['POST'])
@@ -83,14 +95,25 @@ def login(request):
         return Response({'error': 'Both email and password are required'}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-       
         client = Client.objects.get(email=email)
     except Client.DoesNotExist:
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
-    
     if not check_password(password, client.password):
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
-    return Response({'message': 'Login successful'}, status=status.HTTP_200_OK)
+    refresh = RefreshToken.for_user(client)
+    token = {
+        'client_id': client.id,
+        'refresh': str(refresh),
+        'access': str(refresh.access_token),
+    }
+
+    response_data = {
+
+        'token': token
+    }
+    return Response(response_data, status=status.HTTP_200_OK)
+
+
 

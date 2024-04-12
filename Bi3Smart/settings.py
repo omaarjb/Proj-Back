@@ -27,12 +27,19 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000'
+]
+CORS_ALLOW_CREDENTIALS = True
+
 
 # Application definition
 
 INSTALLED_APPS = [
 
     'rest_framework',
+    'rest_framework.authtoken',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -67,6 +74,7 @@ PASSWORD_HASHERS = (
     'django.contrib.auth.hashers.MD5PasswordHasher',
     
 )
+
 
 ROOT_URLCONF = 'Bi3Smart.urls'
 
@@ -166,3 +174,11 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
     'x-requested-with',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+}
