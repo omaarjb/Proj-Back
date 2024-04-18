@@ -3,7 +3,7 @@ from .models import Client
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client
-        fields = ['id', 'nom', 'prenom', 'password', 'email', 'adresse']
+        fields = '__all__'
 
     def validate_email(self, value):
         if 'email' in self.initial_data:
