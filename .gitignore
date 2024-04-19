@@ -1,3 +1,4 @@
 # Ignore virtual environment
 .venv/
 .venv/include
+db.sqlite3
