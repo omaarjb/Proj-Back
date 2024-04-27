@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from rest_framework import status
 
 # Create your views here.
 from rest_framework.response import Response
@@ -28,6 +29,12 @@ def chat_view(request):
         Message.objects.create(text=bot_response, sender='bot')
 
         return Response({'message': bot_response})
+    
+@api_view(['DELETE'])
+def delete_all(request):
+    if request.method == 'DELETE':
+        Message.objects.all().delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 def generate_gemini_response(prompt):
     GOOGLE_API_KEY = 'AIzaSyDNSYp3CCxHm9CQ8OsfnvYpHb_qiq6-jlk'
@@ -36,3 +43,6 @@ def generate_gemini_response(prompt):
     response = model.generate_content(prompt)
     result = ''.join([p.text for p in response.candidates[0].content.parts])
     return result
+
+
+
