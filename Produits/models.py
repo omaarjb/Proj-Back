@@ -10,4 +10,4 @@ class Produit(models.Model):
     description= models.CharField(max_length=255,default=' ')
     image = models.CharField(max_length=255,default=' ')
     def __str__(self):
-        return self.nom_prod
+        return self.title
