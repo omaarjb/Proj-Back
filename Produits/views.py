@@ -40,3 +40,18 @@ def produit_detail(request, pk):
     elif request.method == 'DELETE':
         produit.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET'])
+def getProductId(request, title):
+    try:
+        produit = Produit.objects.get(title=title)
+    except Produit.ObjectDoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.method == 'GET':
+        response_data = {
+            'product_id': produit.id
+        }
+        return Response(response_data, status=status.HTTP_200_OK)
+    
+
+        
