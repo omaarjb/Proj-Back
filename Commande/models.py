@@ -10,4 +10,4 @@ class Commande(models.Model):
     montant_total = models.DecimalField(max_digits=7, decimal_places=2, default=0)
 
     def __str__(self):
-        return self.id_comm
+        return str(self.id_comm)
